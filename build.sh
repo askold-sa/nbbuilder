@@ -4,6 +4,6 @@ basedir=$(readlink -f `git rev-parse --show-cdup` .)
 cd $basedir
 mkdir build
 cd build
-cmake $basedir Debug
+cmake $basedir -DCMAKE_BUILD_TYPE=Debug
 make $MAKEOPTS
 
