@@ -11,3 +11,5 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     # set here
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
+add_subdirectory(algorithms)
+add_subdirectory(tools)
