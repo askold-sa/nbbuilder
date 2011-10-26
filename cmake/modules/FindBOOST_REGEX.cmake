@@ -1,0 +1,36 @@
+if (BOOST_REGEX_LIBRARIES AND BOOST_REGEX_INCLUDE_DIRS)
+  set(BOOST_REGEX_FOUND TRUE)
+else (BOOST_REGEX_LIBRARIES AND BOOST_REGEX_INCLUDE_DIRS)
+  find_path(BOOST_REGEX_INCLUDE_DIRS
+    NAMES
+      boost/regex.hpp
+    PATHS
+      /usr/include
+      /usr/local/include
+  )
+
+  find_library(BOOST_REGEX_LIBRARIES
+    NAMES
+      boost_regex
+    PATHS
+      /usr/lib
+      /usr/local/lib
+  )
+
+  if (BOOST_REGEX_INCLUDE_DIRS AND BOOST_REGEX_LIBRARIES)
+     set(BOOST_REGEX_FOUND TRUE)
+  endif (BOOST_REGEX_INCLUDE_DIRS AND BOOST_REGEX_LIBRARIES)
+
+  if (BOOST_REGEX_FOUND)
+    if (NOT BOOST_REGEX_FIND_QUIETLY)
+      message(STATUS "Found boost/regex: ${BOOST_REGEX_LIBRARIES}")
+    endif (NOT BOOST_REGEX_FIND_QUIETLY)
+  else (BOOST_REGEX_FOUND)
+    if (BOOST_REGEX_FIND_REQUIRED)
+      message(FATAL_ERROR "Could not find boost/regex")
+    endif (BOOST_REGEX_FIND_REQUIRED)
+  endif (BOOST_REGEX_FOUND)
+
+  mark_as_advanced(BOOST_REGEX_INCLUDE_DIRS BOOST_REGEX_LIBRARIES)
+
+endif (BOOST_REGEX_LIBRARIES AND BOOST_REGEX_INCLUDE_DIRS)
