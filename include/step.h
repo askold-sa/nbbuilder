@@ -29,6 +29,7 @@ class Step {
         ~Step() {}
 
         virtual void set_init(string init_str) = 0;
+        virtual string get_init() = 0;
         virtual void set_name(string name) = 0;
         virtual string get_name() = 0;
         virtual void label_on() = 0;
@@ -36,8 +37,6 @@ class Step {
         virtual bool is_label() = 0;
         virtual void set_visname(string visname) = 0;
         virtual string get_visname() = 0;
-        virtual void set_add_data(string add_data) = 0;
-        virtual string get_add_data() = 0;
 
         virtual InitResult init() = 0;
 };
@@ -49,7 +48,6 @@ class Step {
 class StepImpl : public Step {
     private:
         string init_str_;
-        string add_data_;
         string name_;
         string visname_;
         bool flabel_;
@@ -60,6 +58,7 @@ class StepImpl : public Step {
         ~StepImpl();
 
         void set_init(string init_str);
+        string get_init();
         void set_name(string name);
         string get_name();
         void label_on();
@@ -67,8 +66,6 @@ class StepImpl : public Step {
         bool is_label();
         void set_visname(string visname);
         string get_visname();
-        void set_add_data(string add_data);
-        string get_add_data();
 
         InitResult init();
 };

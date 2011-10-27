@@ -21,6 +21,10 @@ void StepImpl::set_init(string init_str) {
     init_str_ = init_str;
 }
 
+string StepImpl::get_init() {
+    return init_str_;
+}
+
 void StepImpl::set_name(string name) {
     name_ = name;
 }
@@ -49,18 +53,10 @@ string StepImpl::get_visname() {
     return visname_;
 }
 
-void StepImpl::set_add_data(string add_data) {
-    add_data_ = add_data;
-}
-
-string StepImpl::get_add_data() {
-    return add_data_;
-}
-
 InitResult StepImpl::init() {
     
-    static boost::regex simpleStep_ex ("name:([\\d\\l\\u_]+);[ ]*(add-data:(.*);){0,1}[ ]*");
-    static boost::regex labelStep_ex ("label:([\\d\\l\\u_]+);[ ]*(add-data:(.*);){0,1}[ ]*");
+    static boost::regex simpleStep_ex (".*name:([\\d\\l\\u_]+);.*");
+    static boost::regex labelStep_ex (".*label:([\\d\\l\\u_]+);.*");
     boost::smatch res;
 
     if (regex_search( init_str_, res, labelStep_ex )) 
@@ -68,7 +64,6 @@ InitResult StepImpl::init() {
         name_ = res[1];
         visname_ = name_;
         flabel_ = true;
-        add_data_ = res[3];
 
         return OK;
     } 
@@ -77,7 +72,6 @@ InitResult StepImpl::init() {
         name_ = res[1];
         visname_ = name_;
         flabel_ = false;
-        add_data_ = res[3];
 
         return OK;
     }
