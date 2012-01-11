@@ -1,6 +1,7 @@
 set(NBBuilderSrc
     main.cpp
     ${CMAKE_SOURCE_DIR}/algorithms/step.cpp
+    ${CMAKE_SOURCE_DIR}/algorithms/miscfuncs.cpp
 )
 
 include_directories( ${CMAKE_SOURCE_DIR}/include/ )
