@@ -3,6 +3,9 @@ cmake_minimum_required (VERSION 2.6.4)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
+find_package( BOOST_REGEX )
+find_package( BOOST_GRAPH )
+
 set(CMAKE_CXX_FLAGS_DEBUG               "-O3 -Wextra -g -Wno-deprecated" )
 set(CMAKE_C_FLAGS_DEBUG                 "-O3 -Wextra -g" )
 
