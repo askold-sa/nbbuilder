@@ -9,6 +9,9 @@
  * (какие данные нужны и что в точности представляет
  * шаг в плане реализации), мы разделяем интерфейс и реализацию.
  */
+#ifndef __STEP_H
+#define __STEP_H
+
 #include<iostream>
 #include<string>
 #include<vector>
@@ -37,6 +40,7 @@ class Step {
         virtual bool is_label() = 0;
         virtual void set_visname(string visname) = 0;
         virtual string get_visname() = 0;
+        virtual bool operator== (Step&) = 0;
 
         virtual InitResult init() = 0;
 };
@@ -66,8 +70,9 @@ class StepImpl : public Step {
         bool is_label();
         void set_visname(string visname);
         string get_visname();
+        bool operator== (Step&);
 
         InitResult init();
 };
 
-
+#endif // __STEP_H

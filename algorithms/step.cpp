@@ -53,6 +53,12 @@ string StepImpl::get_visname() {
     return visname_;
 }
 
+bool StepImpl::operator==(Step& op) {
+	return this->get_name() == op.get_name() 
+		&& this->is_label() == op.is_label()
+		&& this->get_visname() == op.get_visname();
+}
+
 InitResult StepImpl::init() {
     
     static boost::regex simpleStep_ex (".*name:([\\d\\l\\u_]+);.*");

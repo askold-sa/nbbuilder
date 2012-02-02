@@ -57,7 +57,7 @@ int main ( int argc, char **argv ) {
 	cout<<"Subtraces for labels: "<<l1<<" and "<<l2<<":\n";
 	TraceSet subtraces = subt(traces,l1,l2);
 	debugPrint(subtraces);	
-    
+	
     /*
     Step *s1 = new StepImpl("dglkhgh name:stepA;   ");
     Step *s2 = new StepImpl("jfGHFGA;label:L1;   add-data: Gosznak;   ");
