@@ -23,6 +23,7 @@ using namespace boost;
 typedef adjacency_list<vecS, vecS, directedS> BehaviorGraph;
 
 typedef graph_traits<BehaviorGraph>::vertex_descriptor BGVertex; 
+typedef graph_traits<BehaviorGraph>::vertex_iterator BGVertexIter;
 
 typedef vector<Step*> BGProperties;
 
@@ -34,6 +35,8 @@ class Behavior {
 		// vector to store information about steps associated with
 		// each vertex of grath
 		BGProperties props_;
+		// root of behavior tree
+		BGVertex root_;
 		
 	public:
 		Behavior();
@@ -46,6 +49,11 @@ class Behavior {
 		
 		void add_edge(BGVertex v, BGVertex u);
 		void remove_edge(BGVertex v, BGVertex u);
+		
+		void set_root(BGVertex);
+		BGVertex get_root();
+		
+		void debugPrint();
 		
 };
  

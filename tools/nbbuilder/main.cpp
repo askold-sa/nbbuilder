@@ -56,5 +56,25 @@ int main ( int argc, char **argv ) {
 	TraceSet subtraces = subt(traces,l1,l2);
 	debugPrint(subtraces);	
 
+	Behavior BH;
+	BGVertex v;
+	
+	v = BH.add_step(NULL);
+	BH.set_root(v);
+	
+	cout << "add to behavior steps with names: ";
+	for (TraceSet::const_iterator it=traces.begin();
+		it!=traces.end();it++) 
+		for (Trace::const_iterator itt=it->begin();
+			itt!=it->end();itt++) 
+		{	
+			cout <<" "<< (*itt)->get_name();
+			BH.add_step(*itt);
+		}
+	cout <<std::endl;
+	
+	BH.debugPrint();
+	
+
     return 0;
 }
