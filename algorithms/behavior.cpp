@@ -68,4 +68,11 @@ void Behavior::debugPrint() {
 				(props_[*vp.first] ? props_[*vp.first]->get_name()
 					: "NULL")
 				) <<") ";
+	cout<<endl;
+	cout<<"edges(Behavior)= ";
+	graph_traits<BehaviorGraph>::edge_iterator ei,ei_end;
+	for (tie(ei,ei_end) = edges(bg_);ei!=ei_end;++ei)
+		cout <<"("<<index[source(*ei,bg_)]
+			<<","<<index[target(*ei,bg_)]<<") ";
+	cout<<endl;
 }
