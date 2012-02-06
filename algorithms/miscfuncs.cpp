@@ -61,6 +61,14 @@ TraceSet subt(const TraceSet& trace_set, string l1, string l2)
     return traces_;
 }
 
+Trace::const_iterator get_next_label(const Trace& t, 
+	Trace::const_iterator it) 
+{
+	it++;
+	while ( it != t.end() && !(*it)->is_label() ) it++;
+	return it;
+}
+
 void debugPrint(const Trace& trace) 
 {
 	for (Trace::const_iterator it=trace.begin();

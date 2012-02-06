@@ -8,6 +8,9 @@ LOrder lorder(const Trace& trace);
 
 TraceSet subt(const TraceSet& trace_set, string l1, string l2);
 
+Trace::const_iterator get_next_label(const Trace&, 
+	Trace::const_iterator);
+
 void debugPrint(const Trace& trace);
 
 void debugPrint(const TraceSet& trace_set);

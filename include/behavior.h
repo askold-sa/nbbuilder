@@ -59,6 +59,9 @@ class Behavior {
 		// and connect this path to given pair of vertices
 		void add_path(Trace::const_iterator,
 			Trace::const_iterator, BGVertex, BGVertex);
+		// add path for each trace in trace set and
+		// place these paths between given vertices
+		void add_traces(TraceSet&,BGVertex, BGVertex);
 		
 		void debugPrint();
 		

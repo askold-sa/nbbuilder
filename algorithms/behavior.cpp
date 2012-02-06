@@ -71,6 +71,13 @@ void Behavior::add_path(Trace::const_iterator it1,
 	add_edge(v1,u);
 }
 
+void Behavior::add_traces(TraceSet& ts,BGVertex v, BGVertex u) {
+
+	for (TraceSet::const_iterator it=ts.begin();
+		it!=ts.end();it++) 
+		add_path(it->begin(),it->end(),v,u);
+}
+
 void Behavior::debugPrint() {
 	
 	property_map<BehaviorGraph,vertex_index_t>::type 

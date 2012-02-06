@@ -85,12 +85,21 @@ int main ( int argc, char **argv ) {
 	
 	root = BHext.add_step(NULL);
 	BHext.set_root(root);
+	/*
 	for (TraceSet::const_iterator ts_it=traces.begin();
 			ts_it!=traces.end();ts_it++) {
 		
 		fin = BHext.add_step(NULL);
 		BHext.add_path(ts_it->begin(),ts_it->end(),root,fin);
 	}
+	*/
+	/*
+	vector<Trace::const_iterator> label_it;
+	for (TraceSet::const_iterator it=traces.begin();
+			it!=traces.end();it++) label_it.push_back(it->begin());
+	*/
+	fin = BHext.add_step(NULL);
+	BHext.add_traces(traces,root,fin);
 	
 	BHext.save_dot("ext.dot",BHext.produce_dot());
 
