@@ -17,6 +17,7 @@
  
 #include<step.h>
 #include<trace.h>
+#include<vis.h>
  
 using namespace boost; 
  
@@ -55,6 +56,10 @@ class Behavior {
 		
 		void debugPrint();
 		
+		// produce graph layout in dot format (graphvis)
+		string produce_dot();
+		// save graph layout to file
+		void save_dot(const string filename, const string &dot);
 };
  
  

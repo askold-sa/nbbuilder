@@ -81,6 +81,7 @@ int main ( int argc, char **argv ) {
 	
 	BH.debugPrint();
 	
+	BH.save_dot("res.dot",BH.produce_dot());
 
     return 0;
 }
