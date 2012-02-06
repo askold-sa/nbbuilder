@@ -9,8 +9,8 @@
 #define VIS_STEP_SHAPE	"oval"
 #define VIS_STEP_COLOR	"black"
 #define VIS_FONTSIZE	"8"
-#define VIS_ERROR_MSG	"ERROR!!"
-#define VIS_ERROR_COLOR	"red"
-#define VIS_ERROR_SHAPE	"plaintext"
+#define VIS_NULL_MSG	"NULL"
+#define VIS_NULL_COLOR	"red"
+#define VIS_NULL_SHAPE	"box"
 
 #endif // __VIS_H
