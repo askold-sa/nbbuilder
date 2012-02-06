@@ -56,6 +56,20 @@ BGVertex Behavior::get_root() {
 	return root_;
 }
 
+void Behavior::add_path(Trace::const_iterator it1, 
+	Trace::const_iterator it2, BGVertex v, BGVertex u) {
+	
+	BGVertex v1,v2;
+	
+	v1 = v;
+	while (it1 != it2) {
+		v2 = add_step(*it1);
+		add_edge(v1,v2);
+		v1 = v2;
+		it1++;
+	}
+	add_edge(v1,u);
+}
 
 void Behavior::debugPrint() {
 	
@@ -104,11 +118,11 @@ string Behavior::produce_dot() {
 		{
 			Step *sp = props_[*vp.first];
 			
-			if (!sp) // pointer to NULL, no step, error
+			if (!sp) // pointer to NULL
 				new_node <<"  "<<index[*vp.first] <<
-					"[shape="<<VIS_ERROR_SHAPE <<
-					",fontcolor="<<VIS_ERROR_COLOR <<
-					",label="""<<VIS_ERROR_MSG<<"""];";
+					"[shape="<<VIS_NULL_SHAPE <<
+					",fontcolor="<<VIS_NULL_COLOR <<
+					",label="""<<VIS_NULL_MSG<<"""];";
 			else // set appropriate shape and color, set visname
 				new_node<<"  "<<index[*vp.first] <<
 					"[shape=" <<

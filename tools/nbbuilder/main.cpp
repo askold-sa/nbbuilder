@@ -56,32 +56,43 @@ int main ( int argc, char **argv ) {
 	TraceSet subtraces = subt(traces,l1,l2);
 	debugPrint(subtraces);	
 
-	Behavior BH;
+	// create Behavior graph for original traces
+	Behavior BHorig;
 	BGVertex v,u;
 	
-	v = BH.add_step(NULL);
-	BH.set_root(v);
+	v = BHorig.add_step(NULL);
+	BHorig.set_root(v);
 	
-	cout << "add to behavior steps with names: ";
 	for (TraceSet::const_iterator it=traces.begin();
 		it!=traces.end();it++) 
 	{	
-		v = BH.get_root();
+		v = BHorig.get_root();
 		
 		for (Trace::const_iterator itt=it->begin();
 			itt!=it->end();itt++) 
 		{	
-			cout <<" "<< (*itt)->get_name();
-			u = BH.add_step(*itt);
-			BH.add_edge(v,u);
+			u = BHorig.add_step(*itt);
+			BHorig.add_edge(v,u);
 			v = u;
 		}
 	}
-	cout <<std::endl;
 	
-	BH.debugPrint();
+	BHorig.save_dot("orig.dot",BHorig.produce_dot());
+
+	// create Behavior graph for trace extension
+	Behavior BHext;
+	BGVertex root,fin;
 	
-	BH.save_dot("res.dot",BH.produce_dot());
+	root = BHext.add_step(NULL);
+	BHext.set_root(root);
+	for (TraceSet::const_iterator ts_it=traces.begin();
+			ts_it!=traces.end();ts_it++) {
+		
+		fin = BHext.add_step(NULL);
+		BHext.add_path(ts_it->begin(),ts_it->end(),root,fin);
+	}
+	
+	BHext.save_dot("ext.dot",BHext.produce_dot());
 
     return 0;
 }

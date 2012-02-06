@@ -54,6 +54,12 @@ class Behavior {
 		void set_root(BGVertex);
 		BGVertex get_root();
 		
+		// add to behavior graph a path of steps from trace
+		// between two iterators
+		// and connect this path to given pair of vertices
+		void add_path(Trace::const_iterator,
+			Trace::const_iterator, BGVertex, BGVertex);
+		
 		void debugPrint();
 		
 		// produce graph layout in dot format (graphvis)
