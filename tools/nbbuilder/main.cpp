@@ -85,6 +85,7 @@ int main ( int argc, char **argv ) {
 	
 	root = BHext.add_step(NULL);
 	BHext.set_root(root);
+	fin = BHext.add_step(NULL);
 	/*
 	for (TraceSet::const_iterator ts_it=traces.begin();
 			ts_it!=traces.end();ts_it++) {
@@ -98,8 +99,69 @@ int main ( int argc, char **argv ) {
 	for (TraceSet::const_iterator it=traces.begin();
 			it!=traces.end();it++) label_it.push_back(it->begin());
 	*/
-	fin = BHext.add_step(NULL);
-	BHext.add_traces(traces,root,fin);
+	//fin = BHext.add_step(NULL);
+	//BHext.add_traces(traces,root,fin);
+	
+	// take pairs of iterators for each trace
+	// each pair contain iterator for current position in trace
+	// and the trace.end()
+	vector< trcit_pair_t > tit_vec,head_vec,tail_vec;
+	
+	// store such the pairs in vector
+	for (TraceSet::const_iterator it=traces.begin();
+			it!=traces.end();it++)
+	{
+		// tit_vec will be used to handle all pairs of labels
+		// inside trace, so set the first iterator to first label
+		Trace::const_iterator lit = 
+			get_next_label(it->begin(),it->end());
+		tit_vec.push_back(trcit_pair_t(it->begin(),it->end()));
+		// now create first layer of "label vertices" and connect
+		// them to "root" vertex 
+	}
+	
+	// create 2 layers of label-vertices: prev and current
+	// each layer contain information about label name
+	// and associated vertex
+	map<string, BGVertex> prev_layer, cur_layer;
+	prev_layer.insert(pair<string,BGVertex>("root",root));
+	
+	int layer = 0;
+	// create "full" graph
+	do {
+		cout<<"layer "<<layer<<" labels: ";
+		// 1. create the next layer of "label vertices"
+		cur_layer = create_layer(BHext,tit_vec);
+		
+		// 2. shift iterators to next position in traces
+		// and store only "remaining" traces
+		vector<trcit_pair_t> tmp_vec;
+		for (vector<trcit_pair_t>::iterator it = 
+			tit_vec.begin();it!=tit_vec.end();it++)
+			if (it->first != it->second && ++(it->first) != it->second) 
+				tmp_vec.push_back(trcit_pair_t(it->first,it->second));
+		tit_vec = tmp_vec;
+				
+		cout<<endl;
+		layer++;
+		
+		// 2. connect each pair of "label vertices" 
+		// in previous and current layers with appropriate
+		// paths obtained from subt(traces,label1,label2)
+		for (map<string,BGVertex>::iterator lit1 = 
+			prev_layer.begin();lit1!=prev_layer.end();lit1++)
+		for (map<string,BGVertex>::iterator lit2 = 
+			cur_layer.begin();lit2!=cur_layer.end();lit2++)
+		{
+			TraceSet ts = subt(traces,lit1->first,lit2->first);
+			if (!ts.empty())
+				BHext.add_traces(ts,lit1->second,lit2->second);
+		}
+		
+		prev_layer = cur_layer;
+	}
+	while (!tit_vec.empty()); 
+	
 	
 	BHext.save_dot("ext.dot",BHext.produce_dot());
 

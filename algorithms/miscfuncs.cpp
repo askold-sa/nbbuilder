@@ -6,7 +6,7 @@ LOrder lorder(const Trace& trace)
     
     for (Trace::const_iterator it=trace.begin();it!=trace.end();it++) {
 		if ( (*it)->is_label() )
-			lorder_.push_back( (*it)->get_name() );
+			lorder_.push_back( (*it) );
 	}
     
     return lorder_;
@@ -61,12 +61,42 @@ TraceSet subt(const TraceSet& trace_set, string l1, string l2)
     return traces_;
 }
 
-Trace::const_iterator get_next_label(const Trace& t, 
-	Trace::const_iterator it) 
+Trace::const_iterator get_next_label(Trace::const_iterator it, 
+	Trace::const_iterator it_e) 
 {
-	it++;
-	while ( it != t.end() && !(*it)->is_label() ) it++;
+	while ( it != it_e && !(*it)->is_label() ) it++;
 	return it;
+}
+
+map<string, BGVertex> create_layer(Behavior& BH, 
+	vector<trcit_pair_t>& tit_vec) 
+{
+	map<string, BGVertex> layer;
+	
+	for (vector<trcit_pair_t>::iterator it = tit_vec.begin();
+		it!=tit_vec.end();it++)
+	{
+		// get next label (via trace iterator)
+		Trace::const_iterator cur = 
+			get_next_label(it->first,it->second);
+		// set iterator in vector to this label
+		it->first = cur;
+		
+		// check if label was found
+		if (cur != it->second) 
+		{	
+			string label_name = (*cur)->get_name();
+			cout << label_name<<" ";
+			
+			if (layer.find(label_name) == layer.end())
+			{
+				BGVertex lv = BH.add_step(*cur);
+				layer.insert(pair<string,BGVertex>
+					(label_name,lv));
+			}
+		}
+	}
+	return layer;
 }
 
 void debugPrint(const Trace& trace) 
@@ -85,11 +115,4 @@ void debugPrint(const TraceSet& trace_set)
 		debugPrint(*it);
 		cout << "\n";
 	}
-}
-
-void debugPrint(const LOrder& lorder)
-{
-	for (LOrder::const_iterator it=lorder.begin();
-		it!=lorder.end();it++)
-		cout<< (*it)<<" ";
 }

@@ -9,7 +9,7 @@
 using namespace std;
 
 typedef vector<Step*> Trace;
-typedef vector<string> LOrder;
+typedef vector<Step*> LOrder;
 
 typedef vector<Trace> TraceSet;
 
