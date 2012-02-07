@@ -17,6 +17,8 @@ typedef pair<Trace::const_iterator,Trace::const_iterator>
 		
 map<string, BGVertex> create_layer(Behavior&, vector<trcit_pair_t>&);
 
+void shift_iterators(vector<trcit_pair_t>&);
+
 
 void debugPrint(const Trace& trace);
 void debugPrint(const TraceSet& trace_set);

@@ -25,7 +25,7 @@ int main ( int argc, char **argv ) {
 		"label:l1;","name:m;","name:n;",
 		"label:l2;","name:x;",
 		"label:l2;","label:l1;"},
-		{"label:l2;","name:y;","label:l1;","name:z;"}
+		{"label:l2;","name:y;","label:l1;","name:z;","label:l3"}
 	};
     
     for (int i=0;i<TRACE_Q;i++) {
@@ -105,42 +105,31 @@ int main ( int argc, char **argv ) {
 	// take pairs of iterators for each trace
 	// each pair contain iterator for current position in trace
 	// and the trace.end()
-	vector< trcit_pair_t > tit_vec,head_vec,tail_vec;
-	
+	vector< trcit_pair_t > tit_vec;
 	// store such the pairs in vector
-	for (TraceSet::const_iterator it=traces.begin();
-			it!=traces.end();it++)
-	{
-		// tit_vec will be used to handle all pairs of labels
-		// inside trace, so set the first iterator to first label
-		Trace::const_iterator lit = 
-			get_next_label(it->begin(),it->end());
+	for (TraceSet::const_iterator it=
+		traces.begin();it!=traces.end();it++)
 		tit_vec.push_back(trcit_pair_t(it->begin(),it->end()));
-		// now create first layer of "label vertices" and connect
-		// them to "root" vertex 
-	}
-	
 	// create 2 layers of label-vertices: prev and current
 	// each layer contain information about label name
 	// and associated vertex
 	map<string, BGVertex> prev_layer, cur_layer;
-	prev_layer.insert(pair<string,BGVertex>("root",root));
+	// now create first layer of "label vertices" and connect
+	// them to "root" vertex 
+	prev_layer = create_layer(BHext,tit_vec);
+	for (map<string,BGVertex>::iterator lit = 
+		prev_layer.begin();lit!=prev_layer.end();lit++)
+		BHext.add_edge(root,lit->second);
 	
 	int layer = 0;
 	// create "full" graph
 	do {
 		cout<<"layer "<<layer<<" labels: ";
+		// 0. shift iterators to next position to deal only with
+		// "remaining" traces
+		shift_iterators(tit_vec);
 		// 1. create the next layer of "label vertices"
 		cur_layer = create_layer(BHext,tit_vec);
-		
-		// 2. shift iterators to next position in traces
-		// and store only "remaining" traces
-		vector<trcit_pair_t> tmp_vec;
-		for (vector<trcit_pair_t>::iterator it = 
-			tit_vec.begin();it!=tit_vec.end();it++)
-			if (it->first != it->second && ++(it->first) != it->second) 
-				tmp_vec.push_back(trcit_pair_t(it->first,it->second));
-		tit_vec = tmp_vec;
 				
 		cout<<endl;
 		layer++;

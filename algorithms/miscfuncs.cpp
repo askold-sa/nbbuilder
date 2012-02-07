@@ -99,6 +99,16 @@ map<string, BGVertex> create_layer(Behavior& BH,
 	return layer;
 }
 
+void shift_iterators(vector<trcit_pair_t>& vec)
+{
+	vector<trcit_pair_t> tmp_vec;
+	for (vector<trcit_pair_t>::iterator it = 
+		vec.begin();it!=vec.end();it++)
+		if (it->first != it->second && ++(it->first) != it->second) 
+			tmp_vec.push_back(trcit_pair_t(it->first,it->second));
+	vec = tmp_vec;
+}
+
 void debugPrint(const Trace& trace) 
 {
 	for (Trace::const_iterator it=trace.begin();
