@@ -19,6 +19,9 @@ map<string, BGVertex> create_layer(Behavior&, vector<trcit_pair_t>&);
 
 void shift_iterators(vector<trcit_pair_t>&);
 
+void link_layers(Behavior&, const TraceSet&,
+	const map<string, BGVertex>&, const map<string, BGVertex>&);
+
 
 void debugPrint(const Trace& trace);
 void debugPrint(const TraceSet& trace_set);

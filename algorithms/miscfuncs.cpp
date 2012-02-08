@@ -86,8 +86,9 @@ map<string, BGVertex> create_layer(Behavior& BH,
 		if (cur != it->second) 
 		{	
 			string label_name = (*cur)->get_name();
-			cout << label_name<<" ";
-			
+
+			// check if "label vertex" with given name already exists
+			// in layer or not, if not - add it to layer
 			if (layer.find(label_name) == layer.end())
 			{
 				BGVertex lv = BH.add_step(*cur);
@@ -107,6 +108,21 @@ void shift_iterators(vector<trcit_pair_t>& vec)
 		if (it->first != it->second && ++(it->first) != it->second) 
 			tmp_vec.push_back(trcit_pair_t(it->first,it->second));
 	vec = tmp_vec;
+}
+
+void link_layers(Behavior& BH, const TraceSet& traces,
+	const map<string, BGVertex>& prev, 
+	const map<string, BGVertex>& cur) 
+{
+	for (map<string,BGVertex>::const_iterator lit1 = 
+			prev.begin();lit1!=prev.end();lit1++)
+	for (map<string,BGVertex>::const_iterator lit2 = 
+			cur.begin();lit2!=cur.end();lit2++)
+	{
+		TraceSet ts = subt(traces,lit1->first,lit2->first);
+		if (!ts.empty())
+			BH.add_traces(ts,lit1->second,lit2->second);
+	}
 }
 
 void debugPrint(const Trace& trace) 

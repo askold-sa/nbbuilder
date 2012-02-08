@@ -25,7 +25,7 @@ int main ( int argc, char **argv ) {
 		"label:l1;","name:m;","name:n;",
 		"label:l2;","name:x;",
 		"label:l2;","label:l1;"},
-		{"label:l2;","name:y;","label:l1;","name:z;","label:l3"}
+		{"label:l2;","name:y;","label:l1;","name:z;","label:l3;"}
 	};
     
     for (int i=0;i<TRACE_Q;i++) {
@@ -86,21 +86,6 @@ int main ( int argc, char **argv ) {
 	root = BHext.add_step(NULL);
 	BHext.set_root(root);
 	fin = BHext.add_step(NULL);
-	/*
-	for (TraceSet::const_iterator ts_it=traces.begin();
-			ts_it!=traces.end();ts_it++) {
-		
-		fin = BHext.add_step(NULL);
-		BHext.add_path(ts_it->begin(),ts_it->end(),root,fin);
-	}
-	*/
-	/*
-	vector<Trace::const_iterator> label_it;
-	for (TraceSet::const_iterator it=traces.begin();
-			it!=traces.end();it++) label_it.push_back(it->begin());
-	*/
-	//fin = BHext.add_step(NULL);
-	//BHext.add_traces(traces,root,fin);
 	
 	// take pairs of iterators for each trace
 	// each pair contain iterator for current position in trace
@@ -120,32 +105,19 @@ int main ( int argc, char **argv ) {
 	for (map<string,BGVertex>::iterator lit = 
 		prev_layer.begin();lit!=prev_layer.end();lit++)
 		BHext.add_edge(root,lit->second);
-	
-	int layer = 0;
+
 	// create "full" graph
 	do {
-		cout<<"layer "<<layer<<" labels: ";
 		// 0. shift iterators to next position to deal only with
 		// "remaining" traces
 		shift_iterators(tit_vec);
 		// 1. create the next layer of "label vertices"
 		cur_layer = create_layer(BHext,tit_vec);
-				
-		cout<<endl;
-		layer++;
 		
 		// 2. connect each pair of "label vertices" 
-		// in previous and current layers with appropriate
-		// paths obtained from subt(traces,label1,label2)
-		for (map<string,BGVertex>::iterator lit1 = 
-			prev_layer.begin();lit1!=prev_layer.end();lit1++)
-		for (map<string,BGVertex>::iterator lit2 = 
-			cur_layer.begin();lit2!=cur_layer.end();lit2++)
-		{
-			TraceSet ts = subt(traces,lit1->first,lit2->first);
-			if (!ts.empty())
-				BHext.add_traces(ts,lit1->second,lit2->second);
-		}
+		// in previous and current layers with appropriate paths
+		// Paths are obtained from subt(traces,label1,label2)
+		link_layers(BHext,traces,prev_layer,cur_layer);
 		
 		prev_layer = cur_layer;
 	}
