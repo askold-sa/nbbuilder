@@ -68,62 +68,6 @@ Trace::const_iterator get_next_label(Trace::const_iterator it,
 	return it;
 }
 
-map<string, BGVertex> create_layer(Behavior& BH, 
-	vector<trcit_pair_t>& tit_vec) 
-{
-	map<string, BGVertex> layer;
-	
-	for (vector<trcit_pair_t>::iterator it = tit_vec.begin();
-		it!=tit_vec.end();it++)
-	{
-		// get next label (via trace iterator)
-		Trace::const_iterator cur = 
-			get_next_label(it->first,it->second);
-		// set iterator in vector to this label
-		it->first = cur;
-		
-		// check if label was found
-		if (cur != it->second) 
-		{	
-			string label_name = (*cur)->get_name();
-
-			// check if "label vertex" with given name already exists
-			// in layer or not, if not - add it to layer
-			if (layer.find(label_name) == layer.end())
-			{
-				BGVertex lv = BH.add_step(*cur);
-				layer.insert(pair<string,BGVertex>
-					(label_name,lv));
-			}
-		}
-	}
-	return layer;
-}
-
-void shift_iterators(vector<trcit_pair_t>& vec)
-{
-	vector<trcit_pair_t> tmp_vec;
-	for (vector<trcit_pair_t>::iterator it = 
-		vec.begin();it!=vec.end();it++)
-		if (it->first != it->second && ++(it->first) != it->second) 
-			tmp_vec.push_back(trcit_pair_t(it->first,it->second));
-	vec = tmp_vec;
-}
-
-void link_layers(Behavior& BH, const TraceSet& traces,
-	const map<string, BGVertex>& prev, 
-	const map<string, BGVertex>& cur) 
-{
-	for (map<string,BGVertex>::const_iterator lit1 = 
-			prev.begin();lit1!=prev.end();lit1++)
-	for (map<string,BGVertex>::const_iterator lit2 = 
-			cur.begin();lit2!=cur.end();lit2++)
-	{
-		TraceSet ts = subt(traces,lit1->first,lit2->first);
-		if (!ts.empty())
-			BH.add_traces(ts,lit1->second,lit2->second);
-	}
-}
 
 void debugPrint(const Trace& trace) 
 {

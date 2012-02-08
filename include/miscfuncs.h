@@ -14,14 +14,6 @@ Trace::const_iterator get_next_label( Trace::const_iterator,
 
 typedef pair<Trace::const_iterator,Trace::const_iterator> 
 		trcit_pair_t;
-		
-map<string, BGVertex> create_layer(Behavior&, vector<trcit_pair_t>&);
-
-void shift_iterators(vector<trcit_pair_t>&);
-
-void link_layers(Behavior&, const TraceSet&,
-	const map<string, BGVertex>&, const map<string, BGVertex>&);
-
 
 void debugPrint(const Trace& trace);
 void debugPrint(const TraceSet& trace_set);

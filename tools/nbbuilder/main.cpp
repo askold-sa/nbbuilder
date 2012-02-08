@@ -4,6 +4,7 @@
 #include<trace.h>
 #include<behavior.h>
 #include<miscfuncs.h>
+#include<algorithms.h>
 
 using namespace std;
 
@@ -80,50 +81,7 @@ int main ( int argc, char **argv ) {
 	BHorig.save_dot("orig.dot",BHorig.produce_dot());
 
 	// create Behavior graph for trace extension
-	Behavior BHext;
-	BGVertex root,fin;
-	
-	root = BHext.add_step(NULL);
-	BHext.set_root(root);
-	fin = BHext.add_step(NULL);
-	
-	// take pairs of iterators for each trace
-	// each pair contain iterator for current position in trace
-	// and the trace.end()
-	vector< trcit_pair_t > tit_vec;
-	// store such the pairs in vector
-	for (TraceSet::const_iterator it=
-		traces.begin();it!=traces.end();it++)
-		tit_vec.push_back(trcit_pair_t(it->begin(),it->end()));
-	// create 2 layers of label-vertices: prev and current
-	// each layer contain information about label name
-	// and associated vertex
-	map<string, BGVertex> prev_layer, cur_layer;
-	// now create first layer of "label vertices" and connect
-	// them to "root" vertex 
-	prev_layer = create_layer(BHext,tit_vec);
-	for (map<string,BGVertex>::iterator lit = 
-		prev_layer.begin();lit!=prev_layer.end();lit++)
-		BHext.add_edge(root,lit->second);
-
-	// create "full" graph
-	do {
-		// 0. shift iterators to next position to deal only with
-		// "remaining" traces
-		shift_iterators(tit_vec);
-		// 1. create the next layer of "label vertices"
-		cur_layer = create_layer(BHext,tit_vec);
-		
-		// 2. connect each pair of "label vertices" 
-		// in previous and current layers with appropriate paths
-		// Paths are obtained from subt(traces,label1,label2)
-		link_layers(BHext,traces,prev_layer,cur_layer);
-		
-		prev_layer = cur_layer;
-	}
-	while (!tit_vec.empty()); 
-	
-	
+	Behavior BHext = make_full_bh(traces);
 	BHext.save_dot("ext.dot",BHext.produce_dot());
 
     return 0;
