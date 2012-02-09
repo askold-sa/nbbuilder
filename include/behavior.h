@@ -25,6 +25,8 @@ typedef adjacency_list<vecS, vecS, directedS> BehaviorGraph;
 
 typedef graph_traits<BehaviorGraph>::vertex_descriptor BGVertex; 
 typedef graph_traits<BehaviorGraph>::vertex_iterator BGVertexIter;
+typedef graph_traits<BehaviorGraph>::edge_descriptor BGEdge;
+typedef graph_traits<BehaviorGraph>::out_edge_iterator BGOutEdgeIt;
 
 typedef vector<Step*> BGProperties;
 
@@ -50,6 +52,10 @@ class Behavior {
 		
 		void add_edge(BGVertex v, BGVertex u);
 		void remove_edge(BGVertex v, BGVertex u);
+		
+		pair<BGOutEdgeIt,BGOutEdgeIt> get_out_edges(const BGVertex v);
+		BGVertex get_target(const BGEdge e);
+		BGVertex get_source(const BGEdge e);
 		
 		void set_root(BGVertex);
 		BGVertex get_root();

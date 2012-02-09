@@ -48,6 +48,21 @@ void Behavior::remove_edge(BGVertex v, BGVertex u) {
 	boost::remove_edge(v,u,bg_);
 }
 
+pair<BGOutEdgeIt,BGOutEdgeIt> Behavior::get_out_edges(const BGVertex v)
+{
+	return out_edges(v,bg_);
+}
+
+BGVertex Behavior::get_target(const BGEdge e) 
+{
+	return target(e,bg_);
+}
+
+BGVertex Behavior::get_source(const BGEdge e)
+{
+	return source(e,bg_);
+}
+
 void Behavior::set_root(BGVertex v) {
 	root_ = v;
 }
