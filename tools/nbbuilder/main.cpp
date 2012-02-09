@@ -88,6 +88,7 @@ int main ( int argc, char **argv ) {
 	vector<LOrder> lorder_vec = lorder_unique(traces);
 	// create Behavior with only paths what have correct lorders
 	Behavior BHfull_clo = make_full_with_clo(BHfull,lorder_vec);
+	BHfull_clo.save_dot("clo.dot",BHfull_clo.produce_dot());
 
     return 0;
 }
