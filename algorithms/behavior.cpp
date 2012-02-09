@@ -23,8 +23,8 @@ BGVertex Behavior::add_step(Step* step) {
 	return vertex;
 }
 
-Step* Behavior::get_step(BGVertex vertex) {
-	
+Step* Behavior::get_step(BGVertex vertex) const 
+{	
 	property_map<BehaviorGraph,vertex_index_t>::type
 		index = get(vertex_index, bg_);
 	
@@ -49,16 +49,17 @@ void Behavior::remove_edge(BGVertex v, BGVertex u) {
 }
 
 pair<BGOutEdgeIt,BGOutEdgeIt> Behavior::get_out_edges(const BGVertex v)
+	const
 {
 	return out_edges(v,bg_);
 }
 
-BGVertex Behavior::get_target(const BGEdge e) 
+BGVertex Behavior::get_target(const BGEdge e) const
 {
 	return target(e,bg_);
 }
 
-BGVertex Behavior::get_source(const BGEdge e)
+BGVertex Behavior::get_source(const BGEdge e) const
 {
 	return source(e,bg_);
 }
@@ -67,13 +68,13 @@ void Behavior::set_root(BGVertex v) {
 	root_ = v;
 }
 
-BGVertex Behavior::get_root() {
+BGVertex Behavior::get_root() const {
 	return root_;
 }
 
 void Behavior::add_path(Trace::const_iterator it1, 
-	Trace::const_iterator it2, BGVertex v, BGVertex u) {
-	
+	Trace::const_iterator it2, BGVertex v, BGVertex u) 
+{
 	BGVertex v1,v2;
 	
 	v1 = v;
@@ -86,15 +87,15 @@ void Behavior::add_path(Trace::const_iterator it1,
 	add_edge(v1,u);
 }
 
-void Behavior::add_traces(const TraceSet& ts,BGVertex v, BGVertex u) {
-
+void Behavior::add_traces(const TraceSet& ts,BGVertex v, BGVertex u) 
+{
 	for (TraceSet::const_iterator it=ts.begin();
 		it!=ts.end();it++) 
 		add_path(it->begin(),it->end(),v,u);
 }
 
-void Behavior::debugPrint() {
-	
+void Behavior::debugPrint() const
+{
 	property_map<BehaviorGraph,vertex_index_t>::type 
 		index = get(vertex_index, bg_);
 	
@@ -115,8 +116,8 @@ void Behavior::debugPrint() {
 	cout<<endl;
 }
 
-string Behavior::produce_dot() {
-
+string Behavior::produce_dot() const 
+{
 	// set global graph params here
 	stringstream dot;
 	dot << "digraph structs {\n  node[fontsize="
@@ -174,8 +175,8 @@ string Behavior::produce_dot() {
 	return dot.str();
 }
 
-void Behavior::save_dot(const string filename, const string &dot) {
-
+void Behavior::save_dot(const string filename, const string &dot) const 
+{
 	fstream file;
 	
 	file.open(filename.c_str(),ios::out);

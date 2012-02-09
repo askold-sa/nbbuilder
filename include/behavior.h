@@ -48,17 +48,18 @@ class Behavior {
 		// add a new vertex and associate the given state with it
 		BGVertex add_step(Step* step);
 		// obtaine step associated with given vertex
-		Step* get_step(BGVertex vertex); 
+		Step* get_step(BGVertex vertex) const; 
 		
 		void add_edge(BGVertex v, BGVertex u);
 		void remove_edge(BGVertex v, BGVertex u);
 		
-		pair<BGOutEdgeIt,BGOutEdgeIt> get_out_edges(const BGVertex v);
-		BGVertex get_target(const BGEdge e);
-		BGVertex get_source(const BGEdge e);
+		pair<BGOutEdgeIt,BGOutEdgeIt> get_out_edges(const BGVertex v) 
+			const;
+		BGVertex get_target(const BGEdge e) const;
+		BGVertex get_source(const BGEdge e) const;
 		
 		void set_root(BGVertex);
-		BGVertex get_root();
+		BGVertex get_root() const;
 		
 		// add to behavior graph a path of steps from trace
 		// between two iterators
@@ -69,12 +70,12 @@ class Behavior {
 		// place these paths between given vertices
 		void add_traces(const TraceSet&,BGVertex, BGVertex);
 		
-		void debugPrint();
+		void debugPrint() const;
 		
 		// produce graph layout in dot format (graphvis)
-		string produce_dot();
+		string produce_dot() const;
 		// save graph layout to file
-		void save_dot(const string filename, const string &dot);
+		void save_dot(const string filename, const string &dot) const;
 };
  
  
