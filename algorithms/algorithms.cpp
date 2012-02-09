@@ -104,3 +104,12 @@ Behavior make_full_bh(const TraceSet& traces)
 	
 	return BH;
 }
+
+Behavior make_full_with_clo (const Behavior& BHfull, 
+	const vector<LOrder>& lorder_vec)
+{
+	Behavior BH;
+	
+	
+	return BH;
+}

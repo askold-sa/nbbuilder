@@ -81,8 +81,13 @@ int main ( int argc, char **argv ) {
 	BHorig.save_dot("orig.dot",BHorig.produce_dot());
 
 	// create Behavior graph for trace extension
-	Behavior BHext = make_full_bh(traces);
-	BHext.save_dot("ext.dot",BHext.produce_dot());
+	Behavior BHfull = make_full_bh(traces);
+	BHfull.save_dot("ext.dot",BHfull.produce_dot());
+
+	// obtain vector of correct label order
+	vector<LOrder> lorder_vec = lorder_unique(traces);
+	// create Behavior with only paths what have correct lorders
+	Behavior BHfull_clo = make_full_with_clo(BHfull,lorder_vec);
 
     return 0;
 }

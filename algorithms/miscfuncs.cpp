@@ -12,6 +12,40 @@ LOrder lorder(const Trace& trace)
     return lorder_;
 }
 
+bool lorder_is_equal(const LOrder& lo1, const LOrder& lo2)
+{
+	if (lo1.size() != lo2.size()) return false;
+	
+	for (LOrder::const_iterator it1 = lo1.begin(),it2 = lo2.begin();
+		it1!=lo1.end();it1++,it2++)
+		if (*it1 != *it2) return false;
+		
+	return true;
+}
+
+vector<LOrder> lorder_unique(const TraceSet& traces)
+{
+	vector<LOrder> lorder_vec;
+	
+	// 1. iterate through each trace
+	for (TraceSet::const_iterator it=
+		traces.begin();it!=traces.end();it++)
+	{
+		LOrder lo = lorder(*it);
+		// 2. Add to lorder_vec only unique lorder
+		bool is_unique = true;
+		for (vector<LOrder>::const_iterator lo_it=
+			lorder_vec.begin();lo_it!=lorder_vec.end();lo_it++)
+			if (lorder_is_equal(*lo_it,lo)) {
+				is_unique = false;
+				break;
+			}
+			if (is_unique) lorder_vec.push_back(lo);
+	}
+	
+	return lorder_vec;
+}
+
 TraceSet subt(const TraceSet& trace_set, string l1, string l2)
 {
     TraceSet traces_;
