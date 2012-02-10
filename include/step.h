@@ -41,6 +41,7 @@ class Step {
         virtual void set_visname(string visname) = 0;
         virtual string get_visname() = 0;
         virtual bool operator== (Step&) = 0;
+        virtual bool operator!= (Step&) = 0;
 
         virtual InitResult init() = 0;
 };
@@ -71,6 +72,7 @@ class StepImpl : public Step {
         void set_visname(string visname);
         string get_visname();
         bool operator== (Step&);
+        bool operator!= (Step&);
 
         InitResult init();
 };

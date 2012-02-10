@@ -59,6 +59,10 @@ bool StepImpl::operator==(Step& op) {
 		&& this->get_visname() == op.get_visname();
 }
 
+bool StepImpl::operator!=(Step& op) {
+	return !((*this)==op);
+}
+
 InitResult StepImpl::init() {
     
     static boost::regex simpleStep_ex (".*name:([\\d\\l\\u_]+);.*");
