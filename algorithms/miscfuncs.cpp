@@ -18,7 +18,7 @@ bool lorder_is_equal(const LOrder& lo1, const LOrder& lo2)
 	
 	for (LOrder::const_iterator it1 = lo1.begin(),it2 = lo2.begin();
 		it1!=lo1.end();it1++,it2++)
-		if (*it1 != *it2) return false;
+		if (**it1 != **it2) return false;
 		
 	return true;
 }
