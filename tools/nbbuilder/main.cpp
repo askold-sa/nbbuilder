@@ -9,14 +9,14 @@
 using namespace std;
 
 #define MAX_TRACE_LEN	16
-#define TRACE_Q			3
+#define TRACE_Q			8
 
 int main ( int argc, char **argv ) {
 
 	vector<Step*> gs_steps;
 	TraceSet traces;
 
-	const char* names[TRACE_Q][MAX_TRACE_LEN] = {
+	/*const char* names[TRACE_Q][MAX_TRACE_LEN] = {
 		{"label:l0;","name:a;","name:b;",
 		"label:l1;","name:c;","name:d;",
 		"label:l2;","name:e;","name:f;",
@@ -27,6 +27,16 @@ int main ( int argc, char **argv ) {
 		"label:l2;","name:x;",
 		"label:l2;","label:l1;"},
 		{"label:l2;","name:y;","label:l1;","name:z;","label:l3;"}
+	};*/
+	const char* names[TRACE_Q][MAX_TRACE_LEN] = {
+		{"label:l0;","name:a;","label:l1;","name:b;","label:l2;"},
+		{"label:l0;","name:a;","label:l1;","name:c;","label:l2;"},
+		{"label:l0;","name:d;","label:l1;","name:b;","label:l2;"},
+		{"label:l0;","name:d;","label:l1;","name:c;","label:l2;"},
+		{"label:l0;","name:a;","label:l1;","name:e;","label:l2;"},
+		{"label:l0;","name:a;","label:l3;","name:f;","label:l4;"},
+		{"label:l0;","name:a;","label:l1;","name:b;","label:l5;"},
+		{"label:l0;","name:a;","label:l1;","name:c;","label:l5;"}
 	};
     
     for (int i=0;i<TRACE_Q;i++) {
