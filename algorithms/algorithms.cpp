@@ -143,16 +143,8 @@ void handle_path(const Behavior& BHorig, const BGVertex& cur_v,
 	{
 		// now we have full trace
 		// check if its lorder correct 
-		LOrder lo = lorder(trace);
-		bool need_add = false;
-		for (vector<LOrder>::const_iterator lo_it=
-			lo_vec.begin();lo_it!=lo_vec.end();lo_it++)
-			if (lorder_is_equal(*lo_it,lo)) {
-				need_add = true;
-				break;
-			}
 		// and if so, add path for this trace in BHnew
-		if (need_add) 
+		if (lorder_in_set(lorder(trace),lo_vec)) 
 			BHnew.add_path(trace.begin(),trace.end(),
 				BHnew.get_root(),fin);
 	}

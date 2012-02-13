@@ -11,6 +11,8 @@ bool lorder_is_equal(const LOrder&, const LOrder&);
 
 vector<LOrder> lorder_unique(const TraceSet& traces);
 
+bool lorder_in_set(const LOrder& lo, const vector<LOrder>& loset);
+
 TraceSet subt(const TraceSet& trace_set, string l1, string l2);
 
 Trace::const_iterator get_next_label( Trace::const_iterator,

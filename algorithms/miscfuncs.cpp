@@ -23,6 +23,32 @@ bool lorder_is_equal(const LOrder& lo1, const LOrder& lo2)
 	return true;
 }
 
+bool lorder_in_set(const LOrder& lo, const vector<LOrder>& loset)
+{	
+	for (vector<LOrder>::const_iterator loset_it =
+		loset.begin();loset_it!=loset.end();loset_it++) {
+			// check if lorder larger then current lorder from set
+			if (lo.size() > (*loset_it).size()) continue;
+			// check if lo is prefix of current lorder from set
+			bool is_prefix = true;
+			for (LOrder::const_iterator 
+				it1=lo.begin(), it2=(*loset_it).begin();
+				it1!=lo.end() && it2!=(*loset_it).end();
+				it1++, it2++)
+				// if any pair of labels aren't equal - 
+				// then lo isn't a prefix of current lorder
+				if (**it1 != **it2) { 
+					is_prefix = false;
+					break;
+				}
+			// if we are here - check the is_prefix flag
+			// is_prefix == true iff each pairs of labels are equal
+			if (is_prefix) return true;
+	}	
+	cout << "loder: ";debugPrint(lo);cout<<" not in set\n";
+	return false;
+}
+
 vector<LOrder> lorder_unique(const TraceSet& traces)
 {
 	vector<LOrder> lorder_vec;
