@@ -45,7 +45,6 @@ bool lorder_in_set(const LOrder& lo, const vector<LOrder>& loset)
 			// is_prefix == true iff each pairs of labels are equal
 			if (is_prefix) return true;
 	}	
-	cout << "loder: ";debugPrint(lo);cout<<" not in set\n";
 	return false;
 }
 

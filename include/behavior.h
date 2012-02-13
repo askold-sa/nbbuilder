@@ -59,6 +59,8 @@ class Behavior {
 		Step* get_step(BGVertex vertex) const; 
 		//
 		void remove_step(BGVertex vertex);
+		// 
+		int get_index(BGVertex vertex) const;
 		
 		void add_edge(BGVertex v, BGVertex u);
 		void remove_edge(BGVertex v, BGVertex u);

@@ -115,55 +115,80 @@ Behavior make_full_bh(const TraceSet& traces)
 // lorders from lo_vec
 // trace - prefix of trace, trace corresponds the path
 // from "root" of BHorig to current vertex cur_v, including cur_v
-// fin - dummy vertex: paths are insertet between "root" and "fin"
-// ALL ACTUAL modification of BHnew is done in non-recursive
-// state of function
-// The recursive state ONLY do graph traversal and prepare trace
-void handle_path(const Behavior& BHorig, const BGVertex& cur_v,
+// return - true if vertex cur_v was added to BHnew, i.e. 
+// iff path has correct lorder
+bool handle_path(const Behavior& BHorig, const BGVertex& cur_v,
 	const vector<LOrder>& lo_vec, 
-	Behavior& BHnew, const Trace& trace, BGVertex fin)
+	Behavior& BHnew, const Trace& trace, BGVertex& new_v)
 {
+	//cout<<"prefix trace: ";debugPrint(trace);cout<<"\n";
 	// get out_edges of cur_v
 	BGOutEdgeIt out_i, out_end;
 	BGEdge e;
 	tie(out_i,out_end) = BHorig.get_out_edges(cur_v);
-	if (out_i!=out_end) // recursively handle all child vertices
+	if (out_i==out_end) // if there are no out edges - no recursion 
+	{
+		//cout<<"no recursion for: ";debugPrint(trace);cout<<"\n";
+		// now we have full trace
+		// check if its lorder correct 
+		// and if so, add vertex for Step corresponding cur_v
+		if (lorder_in_set(lorder(trace),lo_vec)) {
+			new_v = BHnew.add_step( BHorig.get_step(cur_v) );
+			return true;
+		} else return false;
+			//BHnew.add_path(trace.begin(),trace.end(),
+			//	BHnew.get_root(),fin);
+	} else // recursively handle all child vertices
+	{
+		// flag to check if some path was added for any child vertex
+		bool was_added = false;
+		vector<BGVertex> new_vvec;
+		
 		for (;out_i!=out_end;out_i++)
 		{
 			e = *out_i;
-			// get next vertex
-			BGVertex v = BHorig.get_target(e);
+			// get next child vertex
+			BGVertex child_v = BHorig.get_target(e);
 			// add new Step for given vertex to new trace
 			Trace t = trace;
-			t.push_back(BHorig.get_step(v));
+			t.push_back(BHorig.get_step(child_v));
+			//cout<<"form new trace: ";debugPrint(t);cout<<"\n";
 			// recursive call for this func with new params
-			handle_path(BHorig,v,lo_vec,BHnew,t,fin);
+			// if for given edge child_v vertex new_v was added
+			// then store this new_v in vector and set the flag
+			BGVertex new_v;
+			if (handle_path(BHorig,child_v,lo_vec,BHnew,t,new_v)) {
+				was_added = true;
+				new_vvec.push_back(new_v);
+			}
 		}
-	else // if there are no out edges - then no recursion
-	{
-		// now we have full trace
-		// check if its lorder correct 
-		// and if so, add path for this trace in BHnew
-		if (lorder_in_set(lorder(trace),lo_vec)) 
-			BHnew.add_path(trace.begin(),trace.end(),
-				BHnew.get_root(),fin);
+		// if at least one path was added, then 
+		if (was_added) {
+			// create vertex for current Step
+			BGVertex this_v;
+			this_v = BHnew.add_step(BHorig.get_step(cur_v));
+			// connect it to all recursively added child vertices
+			for (vector<BGVertex>::const_iterator vvec_it = 
+				new_vvec.begin();vvec_it!=new_vvec.end();vvec_it++)
+				BHnew.add_edge(this_v,*vvec_it);
+			// set this vertex as a new_v for our parent
+			new_v = this_v;
+		}
+		return was_added;
 	}
-	return ;
 }
 
 Behavior make_full_with_clo (const Behavior& BHfull, 
 	const vector<LOrder>& lorder_vec)
 {
 	Behavior BH;
-	BGVertex root,fin;
-	root = BH.add_step(NULL);
-	BH.set_root(root);
-	fin = BH.add_step(NULL);
+	BGVertex root;
+	//root = BH.add_step(NULL);
+	//BH.set_root(root);
 	Trace trace;
 	
-	handle_path(BHfull,BHfull.get_root(),lorder_vec,BH,trace,fin);
-	
-	BH.remove_step(fin);
+	if (handle_path(BHfull,BHfull.get_root(),lorder_vec,BH,trace,root))
+		BH.set_root(root);
 	
 	return BH;
 }

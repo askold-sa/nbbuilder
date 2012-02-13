@@ -44,6 +44,16 @@ void Behavior::remove_step(BGVertex vertex)
 	remove_vertex(vertex,bg_);
 }
 
+int Behavior::get_index(BGVertex vertex) const 
+{
+	int index = -1;
+	BGProperties::const_iterator it = props_.find(vertex);
+	if (it!=props_.end())
+		index = (it->second).index;
+	
+	return index;
+}
+
 void Behavior::add_edge(BGVertex v, BGVertex u) {
 	boost::add_edge(v,u,bg_);
 }
