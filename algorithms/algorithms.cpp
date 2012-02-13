@@ -169,7 +169,9 @@ Behavior make_full_with_clo (const Behavior& BHfull,
 	fin = BH.add_step(NULL);
 	Trace trace;
 	
-	handle_path(BHfull,root,lorder_vec,BH,trace,fin);
+	handle_path(BHfull,BHfull.get_root(),lorder_vec,BH,trace,fin);
+	
+	BH.remove_step(fin);
 	
 	return BH;
 }

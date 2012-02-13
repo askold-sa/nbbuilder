@@ -8,6 +8,7 @@ using namespace boost;
 using namespace std;
 
 Behavior::Behavior() {
+	cur_index_ = 0;
 }
 
 Behavior::~Behavior() {
@@ -18,26 +19,29 @@ BGVertex Behavior::add_step(Step* step) {
 	BGVertex vertex;
 	vertex = add_vertex( bg_ );
 	
-	props_.push_back( step );
+	BGProperty p = BGProperty(step,cur_index_++);
+	props_.insert(pair<BGVertex,BGProperty> (vertex,p) );
 	
 	return vertex;
 }
 
 Step* Behavior::get_step(BGVertex vertex) const 
 {	
-	property_map<BehaviorGraph,vertex_index_t>::type
-		index = get(vertex_index, bg_);
-	
 	Step *step = NULL;
-	
-	try 
-	{
-		step = props_.at(index[vertex]);
-	} catch (out_of_range&)
-	{
-	}
+	BGProperties::const_iterator it = props_.find(vertex);
+	if (it!=props_.end())
+		step = (it->second).step;
 	
 	return step;
+}
+
+void Behavior::remove_step(BGVertex vertex)
+{
+	BGProperties::iterator it = props_.find(vertex);		
+	
+	props_.erase(it);
+	clear_vertex(vertex,bg_);
+	remove_vertex(vertex,bg_);
 }
 
 void Behavior::add_edge(BGVertex v, BGVertex u) {
@@ -94,28 +98,6 @@ void Behavior::add_traces(const TraceSet& ts,BGVertex v, BGVertex u)
 		add_path(it->begin(),it->end(),v,u);
 }
 
-void Behavior::debugPrint() const
-{
-	property_map<BehaviorGraph,vertex_index_t>::type 
-		index = get(vertex_index, bg_);
-	
-	cout<<" vertices(Behavior)= ";
-	std::pair<BGVertexIter,BGVertexIter> vp;
-	for (vp = vertices(bg_);vp.first != vp.second; ++vp.first)
-		cout<<index[*vp.first]<<"("
-			<< (*vp.first==root_ ? "root" : 
-				(props_[*vp.first] ? props_[*vp.first]->get_name()
-					: "NULL")
-				) <<") ";
-	cout<<endl;
-	cout<<"edges(Behavior)= ";
-	graph_traits<BehaviorGraph>::edge_iterator ei,ei_end;
-	for (tie(ei,ei_end) = edges(bg_);ei!=ei_end;++ei)
-		cout <<"("<<index[source(*ei,bg_)]
-			<<","<<index[target(*ei,bg_)]<<") ";
-	cout<<endl;
-}
-
 string Behavior::produce_dot() const 
 {
 	// set global graph params here
@@ -124,36 +106,40 @@ string Behavior::produce_dot() const
 		<< VIS_FONTSIZE << "];\n\n";
 	
 	// add nodes
-	property_map<BehaviorGraph,vertex_index_t>::type 
-		index = get(vertex_index, bg_);
+	//property_map<BehaviorGraph,vertex_index_t>::type 
+	//	index = get(vertex_index, bg_);
 
 	std::pair<BGVertexIter,BGVertexIter> vp;
 	for (vp = vertices(bg_);vp.first != vp.second; ++vp.first)
 	{
 		stringstream new_node;
+		int index = -1;
+		Step* sp = NULL;
+		BGProperties::const_iterator it = props_.find(*vp.first);
+		if (it!=props_.end()) {
+			index = (it->second).index;
+			sp = (it->second).step;
+		}
 		
 		if (*vp.first == root_)
-			new_node << "  "<<index[*vp.first] <<
+			new_node << "  "<< index <<
 				"[shape="<<VIS_ROOT_SHAPE <<
 				",fontcolor="<<VIS_ROOT_COLOR<<
 				",label="""<<VIS_ROOT_MSG<<"""];";
 		else 
-		{
-			Step *sp = props_[*vp.first];
-			
+		{			
 			if (!sp) // pointer to NULL
-				new_node <<"  "<<index[*vp.first] <<
+				new_node <<"  "<< index <<
 					"[shape="<<VIS_NULL_SHAPE <<
 					",fontcolor="<<VIS_NULL_COLOR <<
 					",label="""<<VIS_NULL_MSG<<"""];";
 			else // set appropriate shape and color, set visname
-				new_node<<"  "<<index[*vp.first] <<
+				new_node<<"  "<< index <<
 					"[shape=" <<
 					(sp->is_label() ? VIS_LABEL_SHAPE : VIS_STEP_SHAPE)
 					<<",fontcolor=" <<
 					(sp->is_label() ? VIS_LABEL_COLOR : VIS_STEP_COLOR)
-					<<",label="""<<sp->get_visname()<<"""];";
-			
+					<<",label="""<<sp->get_visname()<<"""];";	
 		}
 			
 		dot << new_node.str() << "\n";
@@ -163,11 +149,15 @@ string Behavior::produce_dot() const
 	graph_traits<BehaviorGraph>::edge_iterator ei,ei_end;
 	for (tie(ei,ei_end) = edges(bg_);ei!=ei_end;++ei)
 	{
-		stringstream new_edge;
-		new_edge <<"  "<<index[source(*ei,bg_)]
-			<<"->"<<index[target(*ei,bg_)]<<";";
+		int index1 = -1, index2 = -1;
+		BGProperties::const_iterator it1 = 
+			props_.find(source(*ei,bg_));
+		if (it1!=props_.end()) index1 = (it1->second).index;
+		BGProperties::const_iterator it2 = 
+			props_.find(target(*ei,bg_));
+		if (it2!=props_.end()) index2 = (it2->second).index;
 		
-		dot << new_edge.str() <<"\n";
+		dot <<"  "<<index1<<"->"<<index2<<";\n";
 	}
 	
 	// end of graph

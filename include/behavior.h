@@ -21,14 +21,20 @@
  
 using namespace boost; 
  
-typedef adjacency_list<vecS, vecS, directedS> BehaviorGraph;
+typedef adjacency_list<listS, listS, directedS> BehaviorGraph;
 
 typedef graph_traits<BehaviorGraph>::vertex_descriptor BGVertex; 
 typedef graph_traits<BehaviorGraph>::vertex_iterator BGVertexIter;
 typedef graph_traits<BehaviorGraph>::edge_descriptor BGEdge;
 typedef graph_traits<BehaviorGraph>::out_edge_iterator BGOutEdgeIt;
 
-typedef vector<Step*> BGProperties;
+typedef struct BGProperty 
+{
+	BGProperty(Step* sp, int ind) : step(sp),index(ind) {}
+	Step* step;
+	int index;
+} BGProperty;
+typedef map<BGVertex,BGProperty> BGProperties;
 
 class Behavior {
 	
@@ -40,6 +46,8 @@ class Behavior {
 		BGProperties props_;
 		// root of behavior tree
 		BGVertex root_;
+		// index for new vertex
+		int cur_index_;
 		
 	public:
 		Behavior();
@@ -49,6 +57,8 @@ class Behavior {
 		BGVertex add_step(Step* step);
 		// obtaine step associated with given vertex
 		Step* get_step(BGVertex vertex) const; 
+		//
+		void remove_step(BGVertex vertex);
 		
 		void add_edge(BGVertex v, BGVertex u);
 		void remove_edge(BGVertex v, BGVertex u);
@@ -69,8 +79,6 @@ class Behavior {
 		// add path for each trace in trace set and
 		// place these paths between given vertices
 		void add_traces(const TraceSet&,BGVertex, BGVertex);
-		
-		void debugPrint() const;
 		
 		// produce graph layout in dot format (graphvis)
 		string produce_dot() const;
