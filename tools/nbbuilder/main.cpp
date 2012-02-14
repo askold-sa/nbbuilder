@@ -61,11 +61,6 @@ int main ( int argc, char **argv ) {
 		debugPrint(lorder(*it));
 		cout<<"\n";
 	}
-	
-	string l1 = "l2", l2 = "l1";
-	cout<<"Subtraces for labels: "<<l1<<" and "<<l2<<":\n";
-	TraceSet subtraces = subt(traces,l1,l2);
-	debugPrint(subtraces);	
 
 	// create Behavior graph for original traces
 	Behavior BHorig;
@@ -99,6 +94,9 @@ int main ( int argc, char **argv ) {
 	// create Behavior with only paths what have correct lorders
 	Behavior BHfull_clo = make_full_with_clo(BHfull,lorder_vec);
 	BHfull_clo.save_dot("clo.dot",BHfull_clo.produce_dot());
+
+	Behavior BHmin = make_minimized(BHfull_clo);
+	BHmin.save_dot("min.dot",BHmin.produce_dot());
 
     return 0;
 }
