@@ -201,12 +201,105 @@ Behavior make_full_with_clo (const Behavior& BHfull,
 /////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////
+// obtain child vertices for given vertex set
+vector<BGVertex> obtain_childs(const Behavior& BH, 
+	const vector<BGVertex> vvec)
+{
+	vector<BGVertex> childs;
+	
+	BGOutEdgeIt out_i, out_end;
+	BGEdge e;
+	for (vector<BGVertex>::const_iterator vit =
+		vvec.begin();vit!=vvec.end();vit++) {
+	
+		tie(out_i,out_end) = BH.get_out_edges(*vit);
+		for (;out_i!=out_end;out_i++)
+		{
+			e = *out_i;
+			BGVertex child_v = BH.get_target(e);
+			childs.push_back(child_v);
+		}
+	}
+	return childs;
+}
+
+// store vector of vertices marked with given step
+typedef struct StepChildVertices {
+	Step* sp;
+	vector<BGVertex> vvec;
+	StepChildVertices(Step* step) : sp(step) {}
+};
+
+// for given vertex, obtain Step and undate StepChildVertices vector
+void add2SChVV (vector<StepChildVertices>& storage, 
+	const Behavior& BHorig, const BGVertex v)
+{
+	Step* step = BHorig.get_step(v);
+	// check if entry for given Step already exists in vector
+	for (vector<StepChildVertices>::iterator it=
+		storage.begin();it!=storage.end();it++)
+		if (*step == *((*it).sp)) // check if Steps are equal
+		{
+			// if so, store given vertex (marked with given Step) 
+			it->vvec.push_back(v);
+			return ;
+		}
+	// if entry doen't exist, create and add it to storage
+	StepChildVertices entry = StepChildVertices(step);
+	entry.vvec.push_back(v);
+	storage.push_back(entry);
+	return ;
+}
+
+/*
+ * For given cur_v in BHnew create unique childs, add them to BHnew 
+ * and connect them all to cur_v
+ * Then call this func for each childs vertices
+ * Unique childs mean what for given cur_v and any Step exists 
+ * only one (or zero) child vertex marked with this Step symbol 
+ */
+void create_childs_for_min(const Behavior& BHorig, Behavior& BHnew,
+	BGVertex cur_v, const vector<BGVertex>& childs)
+{
+	if (childs.empty()) // no recursion, do nothing
+		return ;
+	else // main logic, do all work here 
+	{
+		// iterate all child vertices, obtain set of unique Steps
+		// with corresponding vertices
+		vector<StepChildVertices> storage;
+		for (vector<BGVertex>::const_iterator it=
+			childs.begin();it!=childs.end();it++)
+			add2SChVV(storage,BHorig,*it);
+		// now for each "child Step" create vertex, add it to BHnew
+		// and connect it to cur_v 
+		for (vector<StepChildVertices>::const_iterator sit=
+			storage.begin();sit!=storage.end();sit++)
+		{
+			BGVertex new_v = BHnew.add_step(sit->sp);
+			BHnew.add_edge(cur_v,new_v);
+			
+			vector<BGVertex> new_childs;
+			new_childs = obtain_childs(BHorig,sit->vvec);
+			
+			// finally, recursion 
+			create_childs_for_min(BHorig,BHnew,new_v,new_childs);
+		}
+		return ;
+	}
+}
 
 Behavior make_minimized (const Behavior& BHorig)
 {
 	Behavior BH;
 	BGVertex root;
+	root = BH.add_step(NULL);
+	BH.set_root(root);
 	
+	vector<BGVertex> parents;
+	parents.push_back(BHorig.get_root());
+	
+	create_childs_for_min(BHorig,BH,root,obtain_childs(BHorig,parents));
 	
 	return BH;
 }
