@@ -2,6 +2,9 @@
 
 using namespace boost;
 
+/////////////////////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////
 map<string, BGVertex> create_layer(Behavior& BH, 
 	vector<trcit_pair_t>& tit_vec) 
 {
@@ -107,6 +110,10 @@ Behavior make_full_bh(const TraceSet& traces)
 	return BH;
 }
 
+/////////////////////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////
+
 // recursive depth-first handling all paths in Behavior graph
 // BHorig - original behavior graph
 // cur_v - current vertex in original graph
@@ -183,12 +190,23 @@ Behavior make_full_with_clo (const Behavior& BHfull,
 {
 	Behavior BH;
 	BGVertex root;
-	//root = BH.add_step(NULL);
-	//BH.set_root(root);
 	Trace trace;
 	
 	if (handle_path(BHfull,BHfull.get_root(),lorder_vec,BH,trace,root))
 		BH.set_root(root);
+	
+	return BH;
+}
+
+/////////////////////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////
+
+Behavior make_minimized (const Behavior& BHorig)
+{
+	Behavior BH;
+	BGVertex root;
+	
 	
 	return BH;
 }

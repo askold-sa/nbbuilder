@@ -27,4 +27,10 @@ Behavior make_full_bh(const TraceSet&);
  */
 Behavior make_full_with_clo (const Behavior&, const vector<LOrder>&);
 
+/**
+ * Take full behavior graph with correct label orders and
+ * create its "minimized" version
+ */
+Behavior make_minimized (const Behavior& );
+
 #endif // __ALGORITHMS_H
